@@ -15,4 +15,4 @@ data() {
   echo Tmuxifier:GIT: $(tmuxifier -v)
 }
 
-data | column -ts :
+data | sort | column -ts :
