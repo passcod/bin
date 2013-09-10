@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+
+require 'listen'
+cmd = ARGV.pop
+
+puts "~~ #{cmd}"
+puts "~> #{ARGV.join(', ')}"
+
+Signal.trap "INT" do
+  puts "\b\bStopping..."
+  exit
+end
+
+def runit(cmd)
+  puts "\n$ #{cmd}\n"
+  out = `#{cmd}`
+  pro = $?
+  puts out
+  puts "=> Exited: #{pro.exitstatus}"
+  puts "\a" unless pro.success?
+end
+
+Listen.to *ARGV do
+  runit cmd
+end
+
+while true
+  input = STDIN.gets.chomp
+  runit cmd
+end

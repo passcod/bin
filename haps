@@ -1,0 +1,5 @@
+#!/usr/bin/zsh
+
+cd ~/test/haps
+git commit --allow-empty -m "Haps: $1"
+cd -

@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+if ARGV.length == 0
+  puts "Usage: each FILES... COMMAND"
+else
+  cmd = ARGV.pop
+  
+  puts "~~ #{cmd}"
+  puts "~> #{ARGV.join(', ')}"
+
+  Signal.trap "INT" do
+    puts "Stopping..."
+    exit
+  end
+
+  ARGV.each do |arg|
+    puts "\n$ #{cmd} #{arg}"
+    out = `#{cmd} ${arg}`
+    pro = $?
+    puts out
+    puts "=> Exited #{pro.exitstatus}"
+    puts "\a" unless pro.success?
+  end
+end

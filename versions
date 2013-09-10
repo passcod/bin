@@ -1,0 +1,16 @@
+#!/usr/bin/zsh
+
+hubvs=$(hub --version |cut -d\  -f3)
+
+data() {
+  echo Conky:AUR: $(conky -V | head -n1 | cut -d\  -f2)
+  echo Firefox:AUR: $(firefox-nightly -V 2&>/dev/null |cut -d\  -f3)
+  echo Git:SYS: $(echo $hubvs |head -n1)
+  echo Hub:GIT: $(echo $hubvs |tail -n1)
+  echo Kernel:SYS: $(uname -r)
+  echo Node:NVM: $(ls ~/.nvm | grep "^v$(cat ~/.nvm/alias/default)" | cut -c2- | sort -V | tail -1)
+  echo Ruby:RBE: $(rbenv version | cut -d\  -f1)
+  echo Tmuxifier:GIT: $(tmuxifier -v)
+}
+
+data | column -ts :

@@ -1,0 +1,1 @@
+scrot 'Screen-%Y%W%u-%H%M%S.png' -sq 1 -e 'mv $f ~/Pictures/'

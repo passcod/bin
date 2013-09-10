@@ -1,0 +1,2 @@
+#!/usr/bin/bash
+scrot 'Screen-%Y%W%u-%H%M%S.png' -q 1 -e 'mv $f ~/Pictures/'

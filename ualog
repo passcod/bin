@@ -1,0 +1,15 @@
+#!/usr/bin/zsh
+
+days="$2"
+if [[ -z "$days" ]]; then
+  lines=1
+fi
+
+chan="$1"
+if [[ -z "$chan" ]]; then
+  chan="ualug"
+fi
+
+
+ssh b03.passcod.name "sudo -u znc zsh -c '~/bin/readlog \\\#$chan $days'"
+
