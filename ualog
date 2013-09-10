@@ -7,9 +7,9 @@ fi
 
 chan="$1"
 if [[ -z "$chan" ]]; then
-  chan="ualug"
+  chan="\#ualug"
 fi
 
 
-ssh b03.passcod.name "sudo -u znc zsh -c '~/bin/readlog \\\#$chan $days'"
+ssh b03.passcod.name "sudo -u znc zsh -c '~/bin/readlog $chan $days'"
 
