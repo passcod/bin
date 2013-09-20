@@ -117,6 +117,11 @@
 - License: unspecified
 - Copied in vendor/ambrus-gol.pl
 
+### print-args
+
+- Prints the arguments it's given
+- Useful to obtain expansions of arguments (in ba/zsh)
+
 ### ualog
 
 - Retrieves logs from ZNC
