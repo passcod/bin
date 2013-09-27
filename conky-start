@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 if ps | grep -qv conky; then
   conky &> /dev/null &

@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 isnumber() { test "$1" && printf '%f' "$1" &> /dev/null; }
 
