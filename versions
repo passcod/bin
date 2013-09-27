@@ -13,6 +13,7 @@ data() {
   echo Node:NVM: $(ls ~/.nvm | grep "^v$(cat ~/.nvm/alias/default)" | cut -c2- | sort -V | tail -1)
   echo Ruby:RBE: $(rbenv version | cut -d\  -f1)
   echo Tmuxifier:GIT: $(tmuxifier -v)
+  echo Gnome Desktop:SYS: $(yaourt -Q gnome-shell |cut -d\  -f2)
 }
 
 data | sort | column -ts :

@@ -1,0 +1,1 @@
+ssh b03.passcod.name "cd test; mkdir get-md5; cd get-md5; wget \"$1\"; md5sum *; cd ..; rm -r get-md5"
