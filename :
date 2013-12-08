@@ -1,0 +1,17 @@
+#!/usr/bin/zsh
+
+if which ag >/dev/null
+then
+  ag $@
+elif which ack-grep >/dev/null
+then
+  ack-grep $@
+elif which ack >/dev/null
+then
+  ack $@
+elif which grep >/dev/null
+then
+  grep $@
+else
+  echo "Wut. You have neither ag, ack, ack-grep, nor grep." >/dev/stderr
+fi

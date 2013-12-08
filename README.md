@@ -29,6 +29,26 @@
 
 ## Programs
 
+### _
+
+- Alias to less
+- Use like: `ffmpeg --help |_`
+
+### :
+
+- Alias to [ag](https://github.com/ggreer/the_silver_searcher)
+  or [ack](https://github.com/petdance/ack) or grep.
+- Use like `ffmpeg --help |: codec` or `: foobar` (if you have ag or ack)
+
+### init-aliases
+
+- Contains aliases or functions that are either shortcuts
+  or need to modify the current shell's environment
+- **Source** once per shell, preferably in the startup file
+- Replaces my original [Excess](https://gist.github.com/passcod/1234493)
+- Includes: b=bundle, be, befs, bu, dl=aria2c, mkcd, mkgit,
+  n=npm, nepl, ppcd, ppwd, shall
+
 ### ascii-only
 
 - Filters STDIN and rejects non-ascii and non-printable ascii.
@@ -96,14 +116,6 @@
 - Repository: [github/hub](https://github.com/github/hub)
 - [Downloaded](http://hub.github.com/standalone) to vendor/hub
 
-### scr, sscr, iscr, isscr
-
-- Scrot aliases
-- Filename is of the form `Screen-%Y%W%u-%H%M%S.png`
-- Moved to ~/Pictures/
-- `s` prefix means "Select"
-- `i` prefix means "Upload to imgur"
-
 ### netctl
 
 - Alias for `sudo /usr/bin/netctl`
@@ -131,9 +143,22 @@
 - Prints the arguments it's given
 - Useful to obtain expansions of arguments (in ba/zsh)
 
+### scr, sscr, iscr, isscr
+
+- Scrot aliases
+- Filename is of the form `Screen-%Y%W%u-%H%M%S.png`
+- Moved to ~/Pictures/
+- `s` prefix means "Select"
+- `i` prefix means "Upload to imgur"
+
 ### tproxy
 
 - Starts sshuttle with correct config
+
+### trule
+
+- Uses [t](http://sferik.github.io/t/)
+- Prints out a ruler adjusted for tweeting using `$ t update "..."`
 
 ### ualog
 
@@ -151,3 +176,8 @@
 - Uses `listen` gem
 - Runs a command every time anything changes in one or more
   directories (doesn't support individual files)
+
+### zero
+
+- Zero out a file
+- Really just deletes it and then touches it

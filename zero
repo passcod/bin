@@ -1,0 +1,9 @@
+#!/usr/bin/zsh
+
+if [ -z "$@" ]
+then
+  echo "Usage: zero FILENAME [FILENAME...]"
+else
+  rm $@
+  touch $@
+fi
