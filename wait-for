@@ -6,23 +6,28 @@ cmd = ARGV.pop
 puts "~~ #{cmd}"
 puts "~> #{ARGV.join(', ')}"
 
+$notify = Listen.to *ARGV do
+  runit cmd
+end
+
 Signal.trap "INT" do
   puts "\b\bStopping..."
+  $notify.stop
   exit
 end
 
 def runit(cmd)
+  $notify.pause
   puts "\n$ #{cmd}\n"
   out = `#{cmd}`
   pro = $?
   puts out
   puts "=> Exited: #{pro.exitstatus}"
   puts "\a" unless pro.success?
+  $notify.unpause
 end
 
-Listen.to *ARGV do
-  runit cmd
-end
+$notify.start
 
 while true
   input = STDIN.gets.chomp

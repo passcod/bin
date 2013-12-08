@@ -2,7 +2,7 @@
 
 days="$2"
 if [[ -z "$days" ]]; then
-  lines=1
+  days=1
 fi
 
 chan="$1"
@@ -10,6 +10,6 @@ if [[ -z "$chan" ]]; then
   chan="\#ualug"
 fi
 
-
-ssh b03.passcod.name "sudo -u znc zsh -c '~/bin/readlog $chan $days'"
+find ~/.vault/znclogs |grep $chan |tail -n$days |xargs cat
+rsync -ar root@tanna.passcod.name:/var/lib/znc/log/ ~/.vault/znclogs/
 

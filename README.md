@@ -61,6 +61,10 @@
 - Repository: [mozilla/addon-sdk](https://github.com/mozilla/addon-sdk)
 - Installed system-wide in /opt/addon-sdk
 
+### change-bg
+
+- Changes the GNOME3 background to dark (with no argument) or light (with an argument)
+
 ### conky-start
 
 - Start conky only if it's not running yet
@@ -106,6 +110,11 @@
 - Used with custom sudoers.d rules to allow my user to invoke
   netctl without typing a password.
 
+### notif
+
+- Shorter alias to notify-send + some config
+- Used to report progress on long running or looping tasks
+
 ### open
 
 - Use xdg-open and redirection to mimic OS X's open
@@ -122,10 +131,15 @@
 - Prints the arguments it's given
 - Useful to obtain expansions of arguments (in ba/zsh)
 
+### tproxy
+
+- Starts sshuttle with correct config
+
 ### ualog
 
 - Retrieves logs from ZNC
-- Delegates to remote utility
+- First searches on local copy, then rsyncs
+- So run a second time if something doesn't seem updated
 
 ### versions
 
@@ -134,5 +148,6 @@
 
 ### wait-for
 
+- Uses `listen` gem
 - Runs a command every time anything changes in one or more
   directories (doesn't support individual files)

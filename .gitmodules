@@ -1,3 +1,6 @@
 [submodule "vendor/asciiio"]
 	path = vendor/asciiio
 	url = git://github.com/sickill/ascii.io-cli.git
+[submodule "vendor/mackup"]
+	path = vendor/mackup
+	url = git://github.com/lra/mackup.git
