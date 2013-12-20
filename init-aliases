@@ -29,6 +29,7 @@ mkgit() {
   fi
 }
 
+alias :="-:"
 alias b="bundle"
 alias be="b exec"
 alias befs="be foreman start"
