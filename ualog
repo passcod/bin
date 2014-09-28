@@ -10,6 +10,9 @@ if [[ -z "$chan" ]]; then
   chan="\#ualug"
 fi
 
-find ~/.vault/znclogs |grep $chan |tail -n$days |xargs cat
-rsync -ar root@tanna.passcod.name:/var/lib/znc/log/ ~/.vault/znclogs/
-
+for f in $(find ~/.vault/znclogs |grep $chan |tail -n$days); do
+  echo -n :: 
+  echo $f |rev|cut -d_ -f1-3 |cut -c5- |rev
+  cat $f
+  echo
+done

@@ -1,0 +1,2 @@
+#!/usr/bin/bash
+tmux attach -t 0 || tmux

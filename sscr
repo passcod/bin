@@ -1,1 +1,7 @@
-scrot 'Screen-%Y%W%u-%H%M%S.png' -sq 1 -e 'mv $f ~/Pictures/'
+#!/usr/bin/bash
+
+dir="$HOME/Pictures/Screenshots/$(date +'%Y')"
+file=$(date +'Screenshot from %Y-%m-%d %H:%M:%S.png')
+mkdir -p $dir
+scrot "$file" -sq 1 -e "mv '\$f' '$dir'"
+echo Wrote $dir/$file.

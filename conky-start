@@ -1,6 +1,5 @@
 #!/bin/bash
 
-if ps | grep -qv conky; then
-  conky &> /dev/null &
-fi
-
+killall -q conky
+conky-reload
+conky -d -x 0 -y 0 2>/dev/null

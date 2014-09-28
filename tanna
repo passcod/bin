@@ -1,0 +1,16 @@
+#!/usr/bin/zsh
+
+if [ -z "$1" ]; then
+  $0 ssh
+else
+  case "$1" in
+    (ssh)
+      ssh tanna;;
+    (x)
+      ssh -X tanna;;
+    (vnc)
+      ssh -l passcod -L 5901:localhost:5901 tanna;;
+    (mosh)
+      mosh tanna;;
+  esac
+fi

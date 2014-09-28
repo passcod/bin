@@ -29,12 +29,21 @@ mkgit() {
   fi
 }
 
-alias :="-:"
-alias b="bundle"
-alias be="b exec"
-alias befs="be foreman start"
-alias bu="b update"
-alias dl="aria2c"
-alias n="npm"
-alias nepl="repl.history"
-alias shall="ls -shal"
+set_proxy() {
+  if [ -z "$1" ]
+  then
+    echo "Usage: set_proxy <proxy>"
+  else
+    export HTTP_PROXY=$1
+    export http_proxy=$1
+    export HTTPS_PROXY=$1
+    export https_proxy=$1
+    export SOCKS_PROXY=$1
+    export socks_proxy=$1
+  fi
+}
+
+unset_proxy() {
+  unset {HTTP{,S},SOCKS}_PROXY
+  unset {http{,s},socks}_proxy
+}

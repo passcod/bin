@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+i = 0
+level = './'
+dires = []
+while i < 10 && dires.length < 1
+  i += 1;
+  dires = Dir["#{level}Cargo.toml"]
+  level = "./.#{level}"
+end
+
+if i >= 10
+  puts "Searched 10 levels of parent directories and found nothing."
+  exit 1
+else
+  root = dires.first.sub /Cargo\.toml$/, ''
+  puts `cd #{root}; pwd`
+end

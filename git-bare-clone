@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+pid=$$
+
+clone() {
+  hub clone $@
+  err=$?
+  if [ $err -gt 0 ]; then
+    kill $$
+  fi
+}
+
+tmpfile="/tmp/git-bare-clone-$(date)"
+clone $@ | tee "$tmpfile"
+folder=$(grep "Cloning into" "$tmpfile" | cut -d\' -f2)
+cd $folder
+rm "$tmpfile"
+
+ls

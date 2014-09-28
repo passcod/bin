@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+list = []
+ENV.each{|k,v| list.push "#{k} = #{v}"}
+
+list.sort.each{|l| puts l}
+puts `pwd`

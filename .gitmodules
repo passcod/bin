@@ -4,3 +4,6 @@
 [submodule "vendor/mackup"]
 	path = vendor/mackup
 	url = git://github.com/lra/mackup.git
+[submodule "vendor/nsenter"]
+	path = vendor/nsenter
+	url = git://github.com/jpetazzo/nsenter.git

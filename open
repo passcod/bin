@@ -15,4 +15,4 @@ if [ ! -f "$cmd" ]; then
   fi
 fi
 
-xdg-open "$cmd" &> /dev/null &
+mimeo "$cmd" &> /dev/null &
