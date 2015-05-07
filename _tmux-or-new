@@ -1,2 +1,2 @@
 #!/usr/bin/bash
-tmux attach -t 0 || tmux
+tmux -l new-session -As init
