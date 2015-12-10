@@ -1,5 +1,4 @@
 alias :="-:"
-alias _x="chmod +x"
 alias b="bundle"
 alias be="b exec"
 alias befs="be foreman start"

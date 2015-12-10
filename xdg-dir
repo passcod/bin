@@ -1,0 +1,26 @@
+#!/bin/bash
+
+case $1 in
+cache)
+  echo ${XDG_CACHE_HOME:-$HOME/.cache}
+  ;;
+config)
+  echo ${XDG_CONFIG_HOME:-$HOME/.config}
+  ;;
+configdirs)
+  echo ${XDG_CONFIG_DIRS:-/etc/xdg}
+  ;;
+data)
+  echo ${XDG_DATA_HOME:-$HOME/.local/share}
+  ;;
+datadirs)
+  echo ${XDG_DATA_DIRS:-/usr/local/share:/usr/share}
+  ;;
+runtime)
+  echo ${XDG_RUNTIME_DIR:-/run/user/$USER}
+  ;;
+*)
+  echo "Usage: $0 {cache|config|configdirs|data|datadirs|runtime}"
+  exit 1
+esac
+

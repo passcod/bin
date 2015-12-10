@@ -1,5 +1,0 @@
-#!/bin/bash
-
-killall -q conky
-conky-reload
-conky -d -x 0 -y 0 2>/dev/null

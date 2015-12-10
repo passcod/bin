@@ -1,1 +1,0 @@
-sudo -E sshuttle --dns -vr tanna.passcod.name:443 0/0

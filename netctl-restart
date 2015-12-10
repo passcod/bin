@@ -1,5 +1,0 @@
-#!/usr/bin/sh
-netctl-auto disable-all
-sudo systemctl restart dhcpcd
-sleep 5
-netctl-auto enable-all

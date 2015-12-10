@@ -1,0 +1,25 @@
+#!/bin/bash
+
+echo "
+browserify
+bunyan
+csslint
+forever
+gulp-cli
+hoodie-cli
+htmlhint
+jison
+keybase
+knex
+less
+mocha
+n
+nodemon
+npm
+pm2
+postcss
+semver
+standard
+tract
+vantage
+" | xargs npm i -g --cache-min 99999

@@ -1,1 +1,0 @@
-ssh b03.passcod.name "cd test; mkdir get-sha; cd get-sha; wget \"$1\"; sha1sum *; cd ..; rm -r get-sha"

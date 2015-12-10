@@ -1,9 +1,0 @@
-#!/usr/bin/bash
-
-if [[ -z "$1" ]]; then
-  netctl-auto disable-all
-  netctl start e.lan
-else
-  netctl stop e.lan
-  netctl-auto enable-all
-fi
