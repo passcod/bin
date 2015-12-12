@@ -1,0 +1,15 @@
+#!/usr/bin/bash
+
+tarsnapit() {
+  echo "== Archiving $2"
+  sudo tarsnap -c -f $1_$(date +'%Y-%m-%d') "$2"
+}
+
+tarsnapit vault     /home/ownCloud/vault
+tarsnapit write     /home/write
+tarsnapit calibre   /home/Calibre
+tarsnapit documents /home/Documents
+tarsnapit music     /home/Music
+tarsnapit archives  /home/Archives
+tarsnapit firefox   /home/.mozilla/firefox/current.profile
+tarsnapit skype     /home/.Skype
