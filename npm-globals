@@ -1,6 +1,7 @@
 #!/bin/bash
 
 echo "
+babel-cli
 browserify
 bunyan
 csslint
