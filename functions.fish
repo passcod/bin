@@ -1,6 +1,6 @@
 function mkcd -d "Create a directory and cd to it"
-  mkdir -p $1
-  cd $1
+  mkdir -p $argv[1]
+  cd $argv[1]
 end
 
 function ppwd -d "Save current CWD"
@@ -12,7 +12,7 @@ function ppcd -d "Go back to directory saved by ppwd"
 end
 
 function mkgit -d "Init a git repo in a new directory"
-  mkcd $1
+  mkcd $argv[1]
   git init
   git commit --allow-empty -m "Initial Commit"
 end
@@ -35,12 +35,13 @@ function o -d "Open things"
 end
 
 function set_proxy -d "Set the proxy settings"
-  set -x HTTP_PROXY=$1
-  set -x http_proxy=$1
-  set -x HTTPS_PROXY=$1
-  set -x https_proxy=$1
-  set -x SOCKS_PROXY=$1
-  set -x socks_proxy=$1
+  set p $argv[1]
+  set -x HTTP_PROXY=$p
+  set -x http_proxy=$p
+  set -x HTTPS_PROXY=$p
+  set -x https_proxy=$p
+  set -x SOCKS_PROXY=$p
+  set -x socks_proxy=$p
 end
 
 function unset_proxy -d "Unset the proxy settings"
