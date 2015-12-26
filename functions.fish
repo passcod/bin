@@ -43,6 +43,11 @@ function rbu -d "Update rbenv and ruby"
 
   set latest (rbenv install -l | grep -v '-' | tail -n1 | xargs)
   rbenv install -s $latest
+  and rbenv rehash
+  and gem install --no-rdoc --no-ri bundler
+
+  cd ~/bin
+  and bundle update
 
   popd
 end
