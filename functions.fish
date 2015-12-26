@@ -34,6 +34,19 @@ function o -d "Open things"
   xdg-open "$cmd" > /dev/null &
 end
 
+function rbu -d "Update rbenv and ruby"
+  pushd ~/.rbenv
+  and git pull
+
+  cd ~/.rbenv/plugins/ruby-build
+  and git pull
+
+  set latest (rbenv install -l | grep -v '-' | tail -n1 | xargs)
+  rbenv install -s $latest
+
+  popd
+end
+
 function set_proxy -d "Set the proxy settings"
   set p $argv[1]
   set -x HTTP_PROXY=$p
