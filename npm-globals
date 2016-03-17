@@ -15,6 +15,7 @@ knex
 less
 mocha
 n
+nativefier
 nodemon
 npm
 pm2
