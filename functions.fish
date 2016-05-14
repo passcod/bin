@@ -41,6 +41,7 @@ function rbu -d "Update global gems"
   and cd ..
   and for v in (ls)
     if test ! $v = (basename $gempath)
+      echo rm -rf $v
       rm -rf $v
     end
   end
@@ -49,6 +50,7 @@ function rbu -d "Update global gems"
   # Install bundler and global gems
   pushd ~/bin
   and gem install --no-rdoc --no-ri bundler
+  and bundle install --jobs=4 --path ~/.gem
   and bundle update
   popd
 end
