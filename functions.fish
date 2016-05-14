@@ -34,21 +34,22 @@ function o -d "Open things"
   xdg-open "$cmd" > /dev/null &
 end
 
-function rbu -d "Update rbenv and ruby"
-  pushd ~/.rbenv
-  and git pull
+function rbu -d "Update global gems"
+  # Clean gems from old versions
+  set gempath (gem environment gempath | cut -d: -f1)
+  pushd $gempath
+  and cd ..
+  and for v in (ls)
+    if test ! $v = (basename $gempath)
+      rm -rf $v
+    end
+  end
+  popd
 
-  cd ~/.rbenv/plugins/ruby-build
-  and git pull
-
-  set latest (rbenv install -l | grep -v '-' | tail -n1 | xargs)
-  rbenv install -s $latest
-  and rbenv rehash
+  # Install bundler and global gems
+  pushd ~/bin
   and gem install --no-rdoc --no-ri bundler
-
-  cd ~/bin
   and bundle update
-
   popd
 end
 
