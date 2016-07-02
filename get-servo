@@ -1,0 +1,19 @@
+#!/bin/bash
+
+dir="servo-nightly"
+file="servo-latest.tar.gz"
+url="https://servo-builds.s3.amazonaws.com/nightly/linux/$file"
+path="$(xdg-dir cache)/$dir"
+
+mkdir -p "$path"
+cd "$path"
+
+rm -f $file
+aria2c -x10 -j10 $url
+tar xzf $file
+
+echo "#!/bin/sh" > "$path/servo.sh"
+echo "cd $path/servo" >> "$path/servo.sh"
+echo "./runservo.sh" >> "$path/servo.sh"
+chmod +x "$path/servo.sh"
+ln -sf "$path/servo.sh" ~/bin
