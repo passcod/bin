@@ -47,3 +47,13 @@ unset_proxy() {
   unset {HTTP{,S},SOCKS}_PROXY
   unset {http{,s},socks}_proxy
 }
+
+# PHP static analyser
+phan() {
+  docker run \
+    -v $PWD:/mnt/src \
+    --rm \
+    -u "$(id -u):$(id -g)" \
+    cloudflare/phan $@
+  return $?
+}

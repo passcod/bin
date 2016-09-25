@@ -69,3 +69,12 @@ function unset_proxy -d "Unset the proxy settings"
   set -e {HTTP{,S},SOCKS}_PROXY
   set -e {http{,s},socks}_proxy
 end
+
+function phan -d "PHP static analyser"
+  docker run \
+    -v (pwd):/mnt/src \
+    --rm \
+    -u (id -u):(id -g) \
+    cloudflare/phan $argv
+  return $status
+end
