@@ -1,4 +1,4 @@
-alias :="ag"
+alias :="rg"
 alias b="bundle"
 alias be="b exec"
 alias befs="be foreman start"
