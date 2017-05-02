@@ -1,0 +1,19 @@
+#!/usr/bin/env node
+const fs = require('fs')
+const global = process.env.PATH.split(':').find((p) => /npm/.test(p))
+const wc = require(`${global}/../lib/node_modules/@iarna/word-count`)
+
+let total = 0
+function count (str) {
+  const n = wc(str)
+  total += n
+  return n
+}
+
+const paths = process.argv.slice(2)
+paths.forEach((path) => {
+  const file = fs.readFileSync(path).toString()
+  console.log(`${count(file)} \t\t${path}`)
+})
+
+console.log(`${total} total`)
