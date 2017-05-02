@@ -15,4 +15,4 @@ if [ ! -f "$cmd" ]; then
   fi
 fi
 
-mimeo "$cmd" &> /dev/null &
+gio open "$cmd" &> /dev/null &
