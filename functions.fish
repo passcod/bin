@@ -31,7 +31,7 @@ function o -d "Open things"
   end
 
   ruby -e "puts 'Opening ' + if '$cmd' == '.'; 'current directory'; else; '$cmd'; end + '...'"
-  xdg-open "$cmd" > /dev/null &
+  gio open "$cmd" > /dev/null &
 end
 
 function rbu -d "Update global gems"
