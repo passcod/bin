@@ -1,0 +1,408 @@
+#!/usr/bin/ruby
+
+require 'date'
+require 'fileutils'
+require 'memoist'
+require 'yaml'
+
+def log(*arg)
+  verb = arg.shift
+  puts "\e[36mtarsnap\e[0m \e[1m#{verb}\e[0m #{arg.join(' ')}"
+end
+
+class Tarsnap
+  attr_reader :key, :cache
+  extend Memoist
+
+  def initialize(key = nil)
+    @key = key || '/home/.vault/tarsnap/archpire.key'
+    @cache = "/home/.cache/tarsnap/#{File.basename(@key, '.*')}"
+  end
+
+  def cmd(*args)
+    "tarsnap --keyfile #{@key} --cachedir #{@cache} #{args.join(' ')}"
+  end
+
+  def run(*args)
+    log 'run', "\e[34m#{args.join(' ')}\e[0m"
+    `#{cmd(*args)}`
+  end
+
+  def sudo(*args)
+    log 'run', "\e[1;33msudo\e[0m \e[34m#{args.join(' ')}\e[0m"
+    `sudo #{cmd(*args)}`
+  end
+
+  def create!(name, *dir)
+    arcname = "#{name}_#{Time.new.strftime '%Y-%m-%d'}"
+    log 'create', arcname, 'containing', dir.join(', ')
+    run "-cf #{arcname} #{dir.join(' ')}"
+  end
+
+  def sudocreate!(name, *dir)
+    arcname = "#{name}_#{Time.new.strftime '%Y-%m-%d'}"
+    log 'create', arcname, 'containing', dir.join(', ')
+    sudo "-cf #{arcname} #{dir.join(' ')}"
+  end
+
+  def existing_archives
+    # Within the all archives that exist
+    # pick only the ones that match our format
+    # and group them by archive name => [ date, date... ]
+    run('--list-archives').split(/\s+/)
+    .select { |arc| arc =~ /^\w+_\d{4}-\d{2}-\d{2}$/ }
+    .reduce({}) do |list, arc|
+      arcname, arcdate = arc.split('_')
+      list[arcname] ||= []
+      list[arcname].push DateTime.parse(arcdate).to_time
+      list[arcname].sort!
+      list
+    end
+  end
+
+  def delete!(name)
+    run "-df #{name}"
+  end
+
+  memoize :existing_archives
+end
+
+class Regs
+  extend Memoist
+  attr_accessor :regs
+
+  def initialize
+    @file = '/home/.config/tarsnap/regs.yml'
+    @regs = begin
+      YAML.load_file @file
+    rescue
+      {}
+    end
+  end
+
+  def save!
+    to_save = {}
+    @regs.each do |name, reg|
+      to_save[name] = {
+        'dir' => reg['dir'],
+        'frequency' => reg['frequency']
+      }
+    end
+
+    FileUtils.mkdir_p @file.sub(/regs\.yml$/, '')
+    File.write @file, YAML.dump(to_save)
+  end
+
+  def t(key = nil)
+    Tarsnap.new key
+  end
+
+  def sync
+    @regs.each do |name, reg|
+      exist = t(reg['key']).existing_archives[name]
+      unless exist.nil?
+        @regs[name]['dates'] = exist
+        @regs[name]['last'] = exist.last
+
+        if exist.last
+          nexttime = exist.last + Regs.freq_to_secs(reg['frequency'])
+          if Time.new < nexttime
+            # If due date is in the past, make next == 'now' ie. nil
+            @regs[name]['next'] = nexttime
+          end
+        end
+      end
+    end
+  end
+
+  def self.clean_name(name)
+    name.downcase.strip.gsub(/[^\w]+/, '-')
+  end
+
+  def self.freq_to_secs(freq)
+    order = case freq
+    when /daily/
+      1
+    when /weekly/
+      7
+    when /monthly/
+      30.5
+    when /yearly/
+      365
+    else
+      1
+    end
+
+    mult = freq.to_i
+    mult = 1 if mult < 1
+
+    (order * mult).round * 60 * 60 * 24
+  end
+
+  memoize :t
+end
+
+module Verbs
+  def self.list(filter = nil)
+    first = true
+    Tarsnap.new.existing_archives.each do |arc, dates|
+      next unless filter.nil? || arc =~ /#{filter}/
+
+      log 'list' unless first
+      first = false
+
+      log 'list', arc
+      dates.each do |date|
+        log 'list', ' ' * 4, date.strftime('%Y-%m-%d')
+      end
+    end
+  end
+
+  def self.create(name, dir)
+    name = Regs.clean_name name
+    t = Tarsnap.new
+    t.create! name, dir
+  end
+
+  def self.prune(name, n)
+    n = n.to_i
+    name = Regs.clean_name name
+
+    t = Tarsnap.new
+    arcs = t.existing_archives[name]
+
+    if arcs.count < 2
+      log 'prune', 'only one backup remaining, aborting'
+      exit 1
+    end
+
+    if n > (arcs.count - 1)
+      n = arcs.count - 1
+      log 'prune', 'cannot prune all backups'
+    end
+
+    log 'prune', 'deleting first', n, 'backups for', name
+
+    arcs.first(n).each do |date|
+      arc = "#{name}_#{date.strftime '%Y-%m-%d'}"
+      t.delete! arc
+    end
+  end
+
+  def self.regs(filter = nil)
+    self.regs_list(filter)
+  end
+
+  def self.regs_fsck
+    first = true
+    r = Regs.new
+
+    keys = r.regs
+    .map { |_, reg| reg['key'] }
+    .compact
+    keys.push(Tarsnap.new.key)
+    keys.sort!
+    keys.uniq!
+
+    keys.each do |key|
+      log 'fsck' unless first
+      first = false
+
+      log 'fsck', 'for key', key
+      ck = r.t(key).run '--fsck'
+      ck.split(/\r?\n/).each do |line|
+        log 'fsck', line
+      end
+    end
+  end
+
+  def self.regs_list(filter = nil)
+    r = Regs.new
+    if r.regs.empty?
+      log 'regs list', 'there are no regs'
+      exit
+    end
+
+    r.sync
+    self.display_regs('list', r.regs, filter)
+  end
+
+  def self.regs_todo(filter = nil)
+    r = Regs.new
+    r.sync
+    regs = {}
+    r.regs.each do |name, reg|
+      next unless reg['next'].nil?
+      regs[name] = reg
+    end
+
+    self.display_regs('todo', regs, filter)
+  end
+
+  def self.display_regs(verb, regs, filter = nil)
+    verb = "regs #{verb}"
+    first = true
+    regs.each do |name, reg|
+      next unless filter.nil? || name =~ /#{filter}/
+
+      log verb unless first
+      first = false
+
+      last = if reg['last'].nil?
+        'never'
+      else
+        reg['last'].strftime('%Y-%m-%d')
+      end
+
+      if reg['dates'] && reg['dates'].count > 1
+        last += " (and #{reg['dates'].count - 1} more)"
+      end
+
+      nexttime = if reg['next'].nil?
+        'now'
+      else
+        reg['next'].strftime('%Y-%m-%d')
+      end
+
+      sudo = if reg['sudo'] == true
+        "\e[33m(sudo!)\e[0m"
+      else
+        ''
+      end
+
+      log verb, name, '⇒', reg['dir'], sudo
+      log verb, '    Last backup:', last
+      log verb, '    Next:', nexttime, "(#{reg['frequency']})"
+    end
+  end
+
+  def self.regs_add(name, dir, frequency)
+    r = Regs.new
+    name = Regs.clean_name name
+    r.regs[name] = {
+      'dir' => dir,
+      'frequency' => frequency
+    }
+    r.save!
+  end
+
+  def self.regs_edit
+    Kernel.exec 'nvim', '/home/.config/tarsnap/regs.yml'
+  end
+
+  def self.regs_rm(name)
+    r = Regs.new
+    name = Regs.clean_name name
+    r.regs.delete name
+    r.save!
+  end
+
+  def self.regs_do(name, force = nil)
+    if !force.nil? && force != true
+      # Prevent manual use of force through CLI
+      self.help
+      exit 1
+    end
+
+    r = Regs.new
+    name = Regs.clean_name name
+    reg = r.regs[name]
+
+    if reg.nil?
+      log 'regs do', 'reg does not exist:', name
+      exit 1
+    end
+
+    r.sync
+
+    unless reg['next'].nil?
+      log 'regs do', 'backup is not necessary at this time'
+      log 'regs do', 'next backup:', reg['next'].strftime('%Y-%m-%d')
+
+      if force
+        log 'regs do', "\e[31mdoing backup now anyway\e[0m"
+      else
+        exit 1
+      end
+    end
+
+    t = r.t(reg['key'])
+    args = [name, reg['dir']]
+    if reg['sudo'] == true
+      t.sudocreate! *args
+    else
+      t.create! *args
+    end
+  end
+
+  def self.regs_do_now(name)
+    self.regs_do(name, true)
+  end
+
+  def self.regs_do_all
+    r = Regs.new
+    r.sync
+    regs = {}
+    r.regs.each do |name, reg|
+      next unless reg['next'].nil?
+      regs[name] = reg
+    end
+
+    if regs.empty?
+      log 'regs do all', 'none to do'
+      exit
+    end
+
+    regs.each do |name, reg|
+      t = r.t(reg['key'])
+      args = [name, reg['dir']]
+      if reg['sudo'] == true
+        t.sudocreate! *args
+      else
+        t.create! *args
+      end
+    end
+  end
+
+  def self.run(*args)
+    cmd = Tarsnap.new.cmd *args
+    Kernel.exec 'sh', '-c', cmd
+  end
+
+  def self.help
+    "Usage: tarsnap-do COMMAND [ARGS...]
+
+    Commands:
+      help - This page
+      create NAME DIR - Manually create an archive
+      list [FILTER] - Display existing archives
+      prune NAME N - Prune the first N archives of NAME
+      regs [FILTER] - List regs (registered backups)
+      regs-add NAME DIR FREQ - Add/edit a reg
+      regs-rm NAME - Remove a reg
+      regs-edit - Open the regs.yml file in vim
+      regs-todo [FILTER] - List regs to do now
+      regs-do NAME - Backup this reg if necessary
+      regs-do-all - Backup all regs as necessary
+      regs-do-now NAME - Backup this reg right now
+      regs-fsck - Run tarsnap --fsck for each key"
+    .split(/\r?\n/)
+    .map { |line| line.sub /^ {4}/, '' }
+    .each { |line| log 'help', line }
+  end
+end
+
+verb = ARGV.shift
+if verb.nil?
+  Verbs.help
+  exit
+end
+
+verb = verb.downcase.strip.gsub('-', '_').to_sym
+if Verbs.respond_to? verb
+  Verbs.send verb, *ARGV
+else
+  log 'verb', 'no such command', verb
+  Verbs.help
+end
+
