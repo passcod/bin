@@ -1,20 +1,19 @@
-function mkcd -d "Create a directory and cd to it"
-  mkdir -p $argv[1]
-  cd $argv[1]
+function mkcd -d "Create directories and cd into the last one"
+  for d in $argv
+    mkdir -p $d
+  end
+  and cd $argv[-1]
 end
 
-function ppwd -d "Save current CWD"
-  echo (pwd) > ~/.ppwd
-end
-
-function ppcd -d "Go back to directory saved by ppwd"
-  cd (cat ~/.ppwd)
-end
-
-function mkgit -d "Init a git repo in a new directory"
-  mkcd $argv[1]
-  git init
-  git commit --allow-empty -m "Initial Commit"
+function mkgit -d "Init git repos in new directories and cd into the last one"
+  pushd
+  and for d in $argv
+    mkcd $d
+    git init
+    git commit --allow-empty -m "Initial Commit"
+  end
+  and cd $argv[-1]
+  popd
 end
 
 function o -d "Open things"
@@ -68,13 +67,4 @@ end
 function unset_proxy -d "Unset the proxy settings"
   set -e {HTTP{,S},SOCKS}_PROXY
   set -e {http{,s},socks}_proxy
-end
-
-function phan -d "PHP static analyser"
-  docker run \
-    -v (pwd):/mnt/src \
-    --rm \
-    -u (id -u):(id -g) \
-    cloudflare/phan $argv
-  return $status
 end
