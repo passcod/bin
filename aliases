@@ -7,5 +7,5 @@ alias dl="aria2c"
 alias git="hub"
 alias shall="ls -shal"
 alias y="pacaur"
-alias yn="y -S --noconfirm"
-
+alias yn="y -S --noconfirm --noedit"
+alias ys="y -Ss"
