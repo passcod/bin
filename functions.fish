@@ -68,3 +68,11 @@ function unset_proxy -d "Unset the proxy settings"
   set -e {HTTP{,S},SOCKS}_PROXY
   set -e {http{,s},socks}_proxy
 end
+
+function privacy -d "Modify prompt for this session to always begin with a space"
+  functions --copy fish_prompt _fish_prompt
+  function fish_prompt
+    _fish_prompt
+    commandline " "
+  end
+end
