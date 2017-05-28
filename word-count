@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 const fs = require('fs')
-const global = process.env.PATH.split(':').find((p) => /npm/.test(p))
-const wc = require(`${global}/../lib/node_modules/@iarna/word-count`)
+const wc = require('@iarna/word-count')
 
 let total = 0
 function count (str) {
