@@ -1,0 +1,26 @@
+diff --git a/us b/us
+index a0a58f1..8ec9eb4 100644
+--- a/us
++++ b/us
+@@ -1286,10 +1286,6 @@ xkb_symbols "workman" {
+     key <AB05> {  [   v,  V   ] };
+     key <AB06> {  [   k,  K   ] };
+     key <AB07> {  [   l,  L   ] };
+-
+-    key <CAPS> { [    BackSpace,       Escape,       BackSpace,        BackSpace ] };
+-
+-    include "level3(ralt_switch)"
+ };
+
+ partial alphanumeric_keys
+@@ -1327,10 +1323,6 @@ xkb_symbols "workman-intl" {
+     key <AB05> { [     v,          V,             v,                V ] };
+     key <AB06> { [     k,          K,            oe,               OE ] };
+     key <AB07> { [     l,          L,        oslash,         Ooblique ] };
+-
+-    key <CAPS> { [ BackSpace, Escape,     BackSpace,        BackSpace ] };
+-
+-    include "level3(ralt_switch)"
+ };
+
+ // Norman keyboard layout symbols for xkb on X.Org Server 7.x
