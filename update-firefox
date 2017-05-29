@@ -1,0 +1,6 @@
+#!/usr/bin/bash
+
+yaourt \
+  --m-arg "--skipchecksums" \
+  --noconfirm \
+  -Sb firefox-always-nightly
