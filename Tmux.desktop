@@ -1,11 +1,10 @@
 [Desktop Entry]
 Type=Application
-Exec=env WAYLAND_DISPLAY= alacritty -e /home/bin/_tmux-or-new
+Exec=hyper
 Icon=utilities-terminal
 Terminal=false
 Categories=System;TerminalEmulator;
 
 Name=Tmux
-GenericName=Terminal
-Comment=A cross-platform, GPU enhanced terminal emulator, opens Tmux
-StartupWMClass=Alacritty
+GenericName=Tmux
+StartupWMClass=Hyper
