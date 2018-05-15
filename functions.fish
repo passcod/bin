@@ -76,3 +76,5 @@ function privacy -d "Modify prompt for this session to always begin with a space
     commandline " "
   end
 end
+
+alias cloc="cloc --processes="(nproc)

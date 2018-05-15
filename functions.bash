@@ -48,12 +48,4 @@ unset_proxy() {
   unset {http{,s},socks}_proxy
 }
 
-# PHP static analyser
-phan() {
-  docker run \
-    -v $PWD:/mnt/src \
-    --rm \
-    -u "$(id -u):$(id -g)" \
-    cloudflare/phan $@
-  return $?
-}
+alias cloc="cloc --processes=$(nproc)"

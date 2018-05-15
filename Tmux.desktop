@@ -1,10 +1,9 @@
 [Desktop Entry]
 Type=Application
-Exec=hyper
+Exec=gnome-terminal --window-with-profile=Tmux
 Icon=utilities-terminal
 Terminal=false
 Categories=System;TerminalEmulator;
 
 Name=Tmux
 GenericName=Tmux
-StartupWMClass=Hyper

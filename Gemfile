@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
+gem 'ghi'
 gem 'gist'
+gem 'memoist'
 gem 'pry'
 gem 't'
 gem 'travis'
