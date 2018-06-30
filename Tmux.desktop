@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Exec=gnome-terminal --window-with-profile=Tmux
+Exec=terminator --profile=tmux
 Icon=utilities-terminal
 Terminal=false
 Categories=System;TerminalEmulator;
