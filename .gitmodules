@@ -1,6 +1,3 @@
 [submodule "vendor/mackup"]
 	path = vendor/mackup
 	url = git://github.com/lra/mackup.git
-[submodule "vendor/with"]
-	path = vendor/with
-	url = git://github.com/mchav/with.git

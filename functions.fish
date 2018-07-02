@@ -6,7 +6,7 @@ function mkcd -d "Create directories and cd into the last one"
 end
 
 function mkgit -d "Init git repos in new directories and cd into the last one"
-  pushd
+  pushd .
   and for d in $argv
     mkcd $d
     git init
