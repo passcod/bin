@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+gem 'foreman'
 gem 'ghi'
 gem 'gist'
 gem 'memoist'
