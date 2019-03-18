@@ -28,13 +28,13 @@
     background_color = "#232a36"
     cursor_color = "#aaaaaa"
     custom_command = tmux
-    font = Iosevka Medium 12
+    font = Iosevka 12
     foreground_color = "#ffffff"
     icon_bell = False
     palette = "#232a36:#d54e53:#b9ca4a:#e6c547:#7aa6da:#c397d8:#70c0ba:#ffffff:#808daa:#ff3334:#9ec400:#e7c547:#7aa6da:#b77ee0:#54ced6:#eeeeee"
     scrollbar_position = hidden
-    show_titlebar = False
     use_custom_command = True
+    use_system_font = False
   [[tmux]]
     audible_bell = True
     background_color = "#232a36"
