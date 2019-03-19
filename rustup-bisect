@@ -1,0 +1,131 @@
+#!/usr/bin/env bash
+
+if [[ "$1" == "--keep-versions" ]]; then
+    keep_versions="1"
+fi
+
+purple="\e[0;35m"
+reset="\e[0m"
+
+releases_url="https://raw.githubusercontent.com/rust-lang/rust/master/RELEASES.md"
+
+mapfile -t versions < <(curl -s "$releases_url" \
+    | grep -v alpha \
+    | grep -oP '^Version [1-9][\d.]+' \
+    | cut -d\  -f2)
+
+# Before that, we have to use `cargo build`
+checkindex=$(echo ${versions[@]/1.15.0//} | cut -d/ -f1 | wc -w | tr -d ' ')
+
+n_versions=${#versions[@]}
+echo -e "${purple}We know of ${reset}${n_versions}${purple} stable Rust versions."
+
+mapfile -t priors < <(rustup toolchain list \
+    | grep -oP '^[\d.]+')
+
+echo -e "There are ${reset}${#priors[@]}${purple} past versions explicitly installed here."
+
+current=$(rustc --version | cut -d\  -f2)
+curindex=$(echo ${versions[@]/$current//} | cut -d/ -f1 | wc -w | tr -d ' ')
+
+if [[ $curindex == 0 ]]; then
+    echo -e "You are on the latest stable: ${reset}${current}${purple}."
+elif [[ $curindex == $n_versions ]]; then
+    echo -e "You are not currently on a stable: ${reset}${current}${purple}" \
+        "(latest is ${reset}${versions[0]}${purple})."
+else
+    echo -e "You are not on the latest stable: ${reset}${current}${purple}" \
+        "(latest is ${reset}${versions[0]}${purple})."
+fi
+
+# Exaggerated (+2) from theoretical given observations
+est_steps=$(echo "l($n_versions - 1)/l(2) + 3" | bc -l | cut -d. -f1)
+
+echo
+echo "Now going to binary search over Rust versions to find the earliest one" \
+    "which compiles your project. We do this by repeatedly installing and checking" \
+    $(if [[ -z "$keep_versions" ]]; then
+        echo -e "then uninstalling Rust versions through rustup. Versions that are" \
+            "already installed will not be removed (at the end, your system should" \
+            "look the same). If you want to keep the versions this script downloads" \
+            "instead, quit and run again with the ${reset}--keep-versions${purple} flag."
+    else
+        echo -e "Rust versions through rustup. As you've passed the" \
+            "${reset}--keep-versions${purple} flag, versions this script downloads will" \
+            "be kept instead of being cleaned up immediately."
+    fi) \
+    | fold -s
+echo
+echo "You'll want a fast, unmetered internet connection. If you're running Windows," \
+    "it will take forever due to https://github.com/rust-lang/rustup.rs/issues/1540." \
+    | fold -s
+if [[ -z "$keep_versions" ]]; then
+echo
+echo "Interrupting the process mid-way may leave a Rust version around, which will" \
+    "NOT be cleaned up on next run. To pause on Linux/macOS, prefer Ctrl-Z / fg." \
+    | fold -s
+fi
+echo
+echo -ne "If you still want to proceed (estimated ${reset}${est_steps}${purple} iterations)," \
+    "press enter now. Otherwise, abort with Ctrl-C.\n" \
+    "\n${reset}=> " \
+    | fold -s
+read
+echo -e "${purple}"
+
+# absolute smallest
+absmin="$((n_versions - 1))"
+
+# smallest unsupported
+trymin="$absmin"
+
+# smallest supported
+trymax="0"
+
+# what we're checking now
+target="$trymin"
+
+while true; do
+    #echo "target: $target trymin: $trymin trymax: $trymax"
+
+    # the above are indexes, this is the version string
+    target_v="${versions[$target]}"
+    echo -ne "Going to check against version ${reset}${target_v}${purple}"
+
+    a_priori=
+    if [[ " ${priors[@]} " =~ " ${target_v} " ]]; then
+        a_priori=1
+        echo -e ", which already exists locally.${reset}"
+    else
+        echo -e ".${reset}"
+        rustup install "$target_v"
+    fi
+
+    echo
+    if if [[ $target > $checkindex ]]; then
+        rustup run "$target_v" cargo build
+    else
+        rustup run "$target_v" cargo check
+    fi; then
+        echo -e "\n${purple}Version ${reset}${target_v}${purple} is supported!"
+
+        trymax="$target"
+        target=$(((trymin - trymax) / 2 + trymax))
+
+        if [[ $trymax == $target ]] || [[ $target_v == "1.0.0" ]]; then
+            echo "That's the earliest! We're done!"
+            break
+        fi
+    else
+        echo -e "\n${purple}Version ${reset}${target_v}${purple} is not supported! See above for why."
+
+        trymin="$target"
+        target=$(((trymin - trymax) / 2 + trymax))
+    fi
+
+    if [[ -z "$a_priori" ]] && [[ -z "$keep_versions" ]]; then
+        echo -e "${reset}"
+        rustup uninstall "$target_v"
+        echo -e "${purple}"
+    fi
+done
