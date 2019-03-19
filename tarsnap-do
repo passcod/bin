@@ -50,7 +50,7 @@ class Tarsnap
     # pick only the ones that match our format
     # and group them by archive name => [ date, date... ]
     run('--list-archives').split(/\s+/)
-    .select { |arc| arc =~ /^\w+_\d{4}-\d{2}-\d{2}$/ }
+    .select { |arc| arc =~ /^[\w\-]+_\d{4}-\d{2}-\d{2}$/ }
     .reduce({}) do |list, arc|
       arcname, arcdate = arc.split('_')
       list[arcname] ||= []
