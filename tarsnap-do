@@ -5,9 +5,11 @@ require 'fileutils'
 require 'memoist'
 require 'yaml'
 
+$start = Time.now
 def log(*arg)
+  time = sprintf('%8.3f', Time.now - $start)
   verb = arg.shift
-  puts "\e[36mtarsnap\e[0m \e[1m#{verb}\e[0m #{arg.join(' ')}"
+  puts "\e[35m#{time} \e[36mtarsnap \e[0m\e[1m#{verb}\e[0m #{arg.join(' ')}"
 end
 
 class Tarsnap
