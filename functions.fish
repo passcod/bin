@@ -5,15 +5,15 @@ function mkcd -d "Create directories and cd into the last one"
   and cd $argv[-1]
 end
 
-function mkgit -d "Init git repos in new directories and cd into the last one"
-  pushd .
-  and for d in $argv
-    mkcd $d
-    git init
-    git commit --allow-empty -m "Initial Commit"
-  end
-  and cd $argv[-1]
-  popd
+function mkgit -d "Init a git repo in a new directory and cd into it"
+  mkcd $argv
+  and git init
+  and git commit --allow-empty -m "Initial Commit"
+end
+
+function mkpijul -d "Init a pijul repo in a new directory and cd into it"
+  pijul init $argv
+  and cd $argv
 end
 
 function o -d "Open things"
