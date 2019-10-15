@@ -100,17 +100,21 @@ class Regs
   def sync
     @regs.each do |name, reg|
       exist = t(reg['key']).existing_archives[name]
-      unless exist.nil?
-        @regs[name]['dates'] = exist
-        @regs[name]['last'] = exist.last
+      next unless exist
 
-        if exist.last
-          nexttime = exist.last + Regs.freq_to_secs(reg['frequency'])
-          if Time.new < nexttime
-            # If due date is in the past, make next == 'now' ie. nil
-            @regs[name]['next'] = nexttime
-          end
+      @regs[name]['dates'] = exist
+      @regs[name]['last'] = exist.last
+
+      if exist.last
+        nexttime = exist.last + Regs.freq_to_secs(reg['frequency'])
+        if Time.new < nexttime
+          # If due date is in the past, make next == 'now' ie. nil
+          @regs[name]['next'] = nexttime
         end
+      end
+
+      if reg['keep'] && reg['keep'] > 0 && exist.length > reg['keep']
+        @regs[name]['prune'] = exist.first(exist.length - reg['keep'])
       end
     end
   end
@@ -258,6 +262,10 @@ module Verbs
         last += " (and #{reg['dates'].count - 1} more)"
       end
 
+      if reg['keep']
+        last += " (keeping #{reg['keep']})"
+      end
+
       nexttime = if reg['next'].nil?
         'now'
       else
@@ -333,6 +341,14 @@ module Verbs
     else
       t.create! *args
     end
+
+    if reg['prune'] && !reg['prune'].empty?
+      log 'regs do', 'autopruning', reg['prune'].length, 'backups'
+      reg['prune'].each do |date|
+        arc = "#{name}_#{date.strftime '%Y-%m-%d'}"
+        t.delete! arc
+      end
+    end
   end
 
   def self.regs_do_now(name)
@@ -360,6 +376,14 @@ module Verbs
         t.sudocreate! *args
       else
         t.create! *args
+      end
+
+      if reg['prune'] && !reg['prune'].empty?
+        log 'regs do all', 'autopruning', reg['prune'].length, 'backups'
+        reg['prune'].each do |date|
+          arc = "#{name}_#{date.strftime '%Y-%m-%d'}"
+          t.delete! arc
+        end
       end
     end
   end
