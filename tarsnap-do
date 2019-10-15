@@ -265,7 +265,7 @@ module Verbs
       end
 
       if reg['keep']
-        last += " (keeping #{reg['keep']})"
+        last += " (keeping #{reg['keep'] + 1})"
       end
 
       nexttime = if reg['next'].nil?
