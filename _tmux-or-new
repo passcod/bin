@@ -1,5 +1,6 @@
 #!/bin/sh
 
+cd $HOME
 export XDG_CONFIG_HOME=$HOME/.config
 
-tmux attach -t 0 || tmux
+tmux attach -c $HOME -t 0 || tmux
