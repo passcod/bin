@@ -1,0 +1,8 @@
+#!/usr/bin/bash
+
+if [[ -z "$2" ]]; then
+  echo "Usage: $0 input.pdf stamp.pdf"
+  exit 1
+fi
+
+pdftk "$1" background "$2" output "${1%.*}-stamped.pdf"

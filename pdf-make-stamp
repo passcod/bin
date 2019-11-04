@@ -1,0 +1,24 @@
+#!/usr/bin/bash
+
+if [[ -z "$1" ]]; then
+  echo "Usage: $0 name.pdf 'stamp message'"
+  exit 1
+fi
+
+text="${2?DRAFT}"
+angle=45 # in degrees counterclockwise from horizontal
+grey=0.75 # 0 is black 1 is white
+
+ps2pdf - "$1" <<!
+%!PS
+/cm { 28.4 mul } bind def
+/draft-Bigfont /Helvetica-Bold findfont 72 scalefont def
+/draft-copy {
+        gsave initgraphics $grey setgray
+        9 cm 9 cm moveto
+        $angle rotate
+        draft-Bigfont setfont
+        ($text) show grestore
+ } def
+draft-copy showpage
+!
