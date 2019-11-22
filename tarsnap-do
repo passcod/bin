@@ -351,6 +351,8 @@ module Verbs
         t.delete! arc
       end
     end
+
+    log 'regs do', 'done'
   end
 
   def self.regs_do_now(name)
@@ -388,6 +390,8 @@ module Verbs
         end
       end
     end
+
+    log 'regs do all', 'all done'
   end
 
   def self.run(*args)
