@@ -1,6 +1,7 @@
 alias b="bundle"
 alias be="b exec"
 alias befs="be foreman start"
+alias bt="dl --listen-port=6922 --dht-listen-port=6915"
 alias bu="b update"
 alias copy="gpaste-client"
 alias dl="aria2c"
