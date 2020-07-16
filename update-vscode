@@ -9,30 +9,36 @@ xattr="user.vscode.updatename"
 mkdir -p "$target"
 cd "$target"
 
-# fetch 'version'
-echo -n "Fetching version: "
+echo -n "Fetching latest version: "
 name=$(curl -sI "$url" | rg '^Location:' | rg -o 'code.+[.]tar[.]gz')
 echo "$name"
 
-# check 'version'
-if [[ $(getfattr --only-values -n "$xattr" "$(find . -type f -print -quit)") == "$name" ]]; then
+echo -n "Checking current version: "
+existing=$(getfattr --only-values -n "$xattr" "$(find . -type f -print -quit)")
+echo "$existing"
+if [[ "$existing" == "$name" ]]; then
   echo "Already at latest version"
   exit
 fi
 
-# remove anything that isn't marked
+echo -n "Deleting unversioned files: "
 for topfile in $(ls -A); do
-  if ! getfattr --only-values -n "$xattr" "$topfile"; then
+  if ! getfattr --only-values -n "$xattr" "$topfile" >/dev/null; then
     rm -rf "$topfile"
+    echo -n "."
   fi
 done
+echo " DONE"
 
 # fetch and extract
-echo "Fetching update"
+echo -n "Updating: "
 curl -L "$url" \
   | tar xz --strip-components=1 --recursive-unlink --unlink-first
+echo "DONE"
 
 # mark all with 'version'
+echo -n "Recording version: "
 find . -exec setfattr -n "$xattr" -v "$name" '{}' \;
+echo "DONE"
 
-echo "You'll want to restart vscode"
+echo "== You’ll want to restart vscode now =="
