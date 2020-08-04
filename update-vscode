@@ -14,11 +14,15 @@ name=$(curl -sI "$url" | rg '^Location:' | rg -o 'code.+[.]tar[.]gz')
 echo "$name"
 
 echo -n "Checking current version: "
-existing=$(getfattr --only-values -n "$xattr" "$(find . -type f -print -quit)")
-echo "$existing"
-if [[ "$existing" == "$name" ]]; then
-  echo "Already at latest version"
-  exit
+existing=$(getfattr --only-values -n "$xattr" "$(find . -type f -print -quit)" || true)
+if [[ -z "$existing" ]]; then
+  echo none
+else
+  echo "$existing"
+  if [[ "$existing" == "$name" ]]; then
+    echo "Already at latest version"
+    exit
+  fi
 fi
 
 echo -n "Deleting unversioned files: "
