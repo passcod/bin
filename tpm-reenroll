@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+part="${1:-}"
+if [[ -z "$part" ]]; then
+  echo "Usage: $0 <partition>" >&2
+  exit 64
+fi
+
+sudo echo -n ""
+
+echo "==> Listing slots for $part"
+slot=$(sudo systemd-cryptenroll "$part" \
+  | tee /dev/stderr \
+  | grep tpm2 \
+  | head -n1 \
+  | sed -E 's/\s+/,/g' \
+  | cut -d, -f2)
+echo
+
+read -p "==> De-enroll slot $slot? [Yn]" confirm
+if [[ -z "$confirm" || "$confirm" == "Y" || "$confirm" == "y" ]]; then
+  sudo systemd-cryptenroll --wipe-slot="$slot" "$part"
+  echo
+
+  echo "==> Re-enrolling TPM"
+  sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0+2+4+7 "$part"
+  echo
+else
+  echo "Abort."
+  exit
+fi
