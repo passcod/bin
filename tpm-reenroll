@@ -21,11 +21,16 @@ echo
 
 read -p "==> De-enroll slot $slot? [Yn]" confirm
 if [[ -z "$confirm" || "$confirm" == "Y" || "$confirm" == "y" ]]; then
-  sudo systemd-cryptenroll --wipe-slot="$slot" "$part"
-  echo
-
   echo "==> Re-enrolling TPM"
-  sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0+2+4+7+12 "$part"
+  # 0  = firmware
+  # 5  = partition table for disk
+  #      - not truly necessary but a useful warning mechanism
+  # 7  = secure boot state incl certificates
+  #      - kernel and bootloader are indirectly protected via this
+  #        but without invalidation on updates
+  # 12 = kernel command line
+  #      - protects against editing it to bypass other auth systems
+  sudo systemd-cryptenroll --wipe-slot="$slot" --tpm2-device=auto --tpm2-pcrs=0+5+7+12 "$part"
   echo
 else
   echo "Abort."
