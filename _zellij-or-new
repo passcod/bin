@@ -1,0 +1,6 @@
+#!/bin/sh
+
+cd $HOME
+export XDG_CONFIG_HOME=$HOME/.config
+
+zellij attach --create main
