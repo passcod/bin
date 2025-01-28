@@ -3,4 +3,8 @@
 cd $HOME
 export XDG_CONFIG_HOME=$HOME/.config
 
-zellij attach --create main
+if zellij list-sessions -n | grep main | grep EXITED; then
+  zellij delete-session --force main || true
+fi
+
+exec zellij attach --create main
