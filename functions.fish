@@ -78,3 +78,13 @@ function privacy -d "Modify prompt for this session to always begin with a space
 end
 
 alias cloc="cloc --processes="(nproc)
+
+function vs -d "Open vscode workspace"
+  code $HOME/code/vscode/$argv[1].code-workspace
+end
+
+function zed -d "Open zed workspace"
+  pushd $HOME/code
+  zeditor $(rg "^$argv[1]:" zed.spaces | cut -d: -f2-)
+  popd
+end
