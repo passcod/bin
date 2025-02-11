@@ -84,7 +84,11 @@ function vs -d "Open vscode workspace"
 end
 
 function zed -d "Open zed workspace"
-  pushd $HOME/code
-  zeditor $(rg "^$argv[1]:" zed.spaces | cut -d: -f2-)
-  popd
+  if test -z "$argv"
+    zeditor .
+  else
+    pushd $HOME/code
+    zeditor $(rg "^$argv[1]:" zed.spaces | cut -d: -f2-)
+    popd
+  end
 end
