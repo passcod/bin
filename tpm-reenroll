@@ -8,10 +8,8 @@ if [[ -z "$part" ]]; then
   exit 64
 fi
 
-sudo echo -n ""
-
 echo "==> Listing slots for $part"
-slot=$(sudo systemd-cryptenroll "$part" \
+slot=$(run0 systemd-cryptenroll "$part" \
   | tee /dev/stderr \
   | grep tpm2 \
   | head -n1 \
@@ -30,7 +28,7 @@ if [[ -z "$confirm" || "$confirm" == "Y" || "$confirm" == "y" ]]; then
   #        but without invalidation on updates
   # 12 = kernel command line
   #      - protects against editing it to bypass other auth systems
-  sudo systemd-cryptenroll --wipe-slot="$slot" --tpm2-device=auto --tpm2-pcrs=0+5+7+12 "$part"
+  run0 systemd-cryptenroll --wipe-slot="$slot" --tpm2-device=auto --tpm2-pcrs=0+5+7+12 "$part"
   echo
 else
   echo "Abort."
