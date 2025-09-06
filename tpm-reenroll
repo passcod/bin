@@ -28,7 +28,7 @@ if [[ -z "$confirm" || "$confirm" == "Y" || "$confirm" == "y" ]]; then
   #        but without invalidation on updates
   # 12 = kernel command line
   #      - protects against editing it to bypass other auth systems
-  run0 systemd-cryptenroll --wipe-slot="$slot" --tpm2-device=auto --tpm2-pcrs=0+5+7+12 "$part"
+  runzero systemd-cryptenroll --wipe-slot="$slot" --tpm2-device=auto --tpm2-pcrs=0+5+7+12 "$part"
   echo
 else
   echo "Abort."
