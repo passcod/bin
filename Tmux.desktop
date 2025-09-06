@@ -1,9 +1,0 @@
-[Desktop Entry]
-Type=Application
-Exec=terminator --profile=tmux
-Icon=utilities-terminal
-Terminal=false
-Categories=System;TerminalEmulator;
-
-Name=Tmux
-GenericName=Tmux

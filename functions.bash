@@ -28,24 +28,3 @@ mkgit() {
     git commit --allow-empty -m "Initial Commit"
   fi
 }
-
-set_proxy() {
-  if [ -z "$1" ]
-  then
-    echo "Usage: set_proxy <proxy>"
-  else
-    export HTTP_PROXY=$1
-    export http_proxy=$1
-    export HTTPS_PROXY=$1
-    export https_proxy=$1
-    export SOCKS_PROXY=$1
-    export socks_proxy=$1
-  fi
-}
-
-unset_proxy() {
-  unset {HTTP{,S},SOCKS}_PROXY
-  unset {http{,s},socks}_proxy
-}
-
-alias cloc="cloc --processes=$(nproc)"

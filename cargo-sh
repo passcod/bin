@@ -1,5 +1,0 @@
-#!/usr/bin/sh
-
-shift
-echo "$*"
-exec $*

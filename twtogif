@@ -1,5 +1,0 @@
-#!/usr/bin/bash
-
-curl "$1" > tw.mp4
-ffmpeg -i tw.mp4 tw.gif
-rm tw.mp4
