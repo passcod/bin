@@ -1,4 +1,0 @@
-#!/usr/bin/env sh
-cd /usr/share/X11/xkb/symbols
-sudo git apply ~/bin/workman-modifiers.diff
-sudo udevadm trigger --subsystem-match=input --action=change
