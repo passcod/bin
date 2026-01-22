@@ -2,6 +2,11 @@
 
 set -euo pipefail
 
+if [[ "$(id -u)" != "0" ]]; then
+  exec runzero $0 $*
+  exit $?
+fi
+
 part="${1:-}"
 if [[ -z "$part" ]]; then
   echo "Usage: $0 <partition>" >&2
@@ -9,7 +14,7 @@ if [[ -z "$part" ]]; then
 fi
 
 echo "==> Listing slots for $part"
-slot=$(run0 systemd-cryptenroll "$part" \
+slot=$(systemd-cryptenroll "$part" \
   | tee /dev/stderr \
   | grep tpm2 \
   | head -n1 \
@@ -28,7 +33,7 @@ if [[ -z "$confirm" || "$confirm" == "Y" || "$confirm" == "y" ]]; then
   #        but without invalidation on updates
   # 12 = kernel command line
   #      - protects against editing it to bypass other auth systems
-  runzero systemd-cryptenroll --wipe-slot="$slot" --tpm2-device=auto --tpm2-pcrs=0+5+7+12 "$part"
+  systemd-cryptenroll --wipe-slot="$slot" --tpm2-device=auto --tpm2-pcrs=0+5+7+12 "$part"
   echo
 else
   echo "Abort."

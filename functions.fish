@@ -41,12 +41,10 @@ function privacy -d "Modify prompt for this session to always begin with a space
   end
 end
 
-function zed -d "Open zed workspace"
+function zed -d "Open zed as flatpak"
   if test -z "$argv"
-    zeditor .
+    zed .
   else
-    pushd $HOME/code
-    zeditor $(rg "^$argv[1]:" zed.spaces | cut -d: -f2-)
-    popd
+    flatpak run dev.zed.Zed "$argv[1]"
   end
 end
