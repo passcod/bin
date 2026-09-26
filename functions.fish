@@ -44,6 +44,8 @@ end
 function zed -d "Open zed as flatpak"
   if test -z "$argv"
     zed .
+  else if which zeditor >/dev/null
+    zeditor "$argv[1]"
   else
     flatpak run dev.zed.Zed "$argv[1]"
   end
