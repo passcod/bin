@@ -1,0 +1,21 @@
+#!/bin/sh
+set -eu
+
+# Four of Chenini's eight physical cores, including both SMT threads per core.
+cpu_set=0-3,8-11
+
+exec systemd-run \
+    --user \
+    --scope \
+    --collect \
+    --quiet \
+    --expand-environment=no \
+    --description='Resource-limited yay' \
+    --property=MemoryHigh=45% \
+    --property=MemoryMax=50% \
+    --property=MemorySwapMax=0 \
+    --property=CPUQuota=800% \
+    --property=CPUWeight=10 \
+    --property=TasksMax=512 \
+    taskset --cpu-list "$cpu_set" \
+    yay "$@"
