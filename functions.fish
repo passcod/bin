@@ -11,6 +11,11 @@ function mkgit -d "Init a git repo in a new directory and cd into it"
   and git commit --allow-empty -m "Initial Commit"
 end
 
+function mkjj -d "Init a jj repo in a new directory and cd into it"
+  mkgit $argv
+  and jj git init
+end
+
 function mkpijul -d "Init a pijul repo in a new directory and cd into it"
   pijul init $argv
   and cd $argv

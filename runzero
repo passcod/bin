@@ -1,2 +1,2 @@
 #!/bin/sh
-exec run0 --background=0 $@
+exec sud0 $@
